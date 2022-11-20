@@ -15,8 +15,6 @@ X = covid_19.drop(columns=['Patient_ID','DT_Collected','COVID PCR Result'])
 y = covid_19['COVID PCR Result']
 
 
-
-
 # %% Checking which columns are objects
 X.columns[X.dtypes.eq('object')]
 
@@ -89,39 +87,10 @@ model.predict(X_dv)
 #%% Probability
 model.predict_proba(X_dv)[0,1]
 
-
+#######
+# %% Making requests
+import requests
+url = 'http://127.0.0.1:5000/predict'
+requests.post(url, json=patient)
 # %%
-# Creating Patient's blood test result as input
-ipatient = {'Age': 53.0,
-    'Hematocrit': 41.7,
-    'HCT 35-45%': 1.0,
-    'HGB': 14.3,
-    'HGB 12-15.5 g/dl': 0.0,
-    'MCH': 29.7,
-    'MCH 26-34 pg': 0.0,
-    'MCHC': 34.3,
-    'MCHC 31-36 g/dl': 0.0,
-    'MCV': 86.5,
-    'MCV 82-98 fl': 0.0,
-    'RBC Count': 4.82,
-    'RBC Count 3.9 - 5.0 x10^6/uL': 0.0,
-    'RDW': 12.2,
-    'RDW 11.5 - 16.5%': 0.0,
-    'Total WBC Count': 4.31,
-    'WBC Count 3.5-10.5 x10^3/uL': 0.0,
-    'Lymphocyte ': 1500.0,
-    'Lymphocyte 900 - 2900 ?': 0.0,
-    'Basophils ': 30.0,
-    'Basophil 0 - 100 ?': 0.0,
-    'Eosinphils ': 5.1,
-    'Eosinphils 50 - 500 uL': 1.0,
-    'Neutrophil ': 2142.0,
-    'Neutrophils 1700 - 8000 ?': 0.0,
-    'Monocytes ': 409.0,
-    'Monocytes 300 - 900 ?': 0.0,
-    'Plt Counts': 225.0,
-    'Platelet 150-450 x10^3/uL   ': 0.0,
-    'Patient_Sex_F': 0.0,
-    'Patient_Sex_M': 1.0
-    }
-# %%
+response.json()

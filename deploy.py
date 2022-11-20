@@ -1,6 +1,6 @@
 
 import pickle
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, app
 
 with open('./model.bin', 'rb') as f_in:
     (dv, model) = pickle.load(f_in)
@@ -10,6 +10,7 @@ with open('./model.bin', 'rb') as f_in:
 app = Flask('covid19')
 
 @app.route('/predict', methods = ['POST'])
+
 def predict():
 
     patient = request.get_json()    
@@ -23,4 +24,4 @@ def predict():
     return jsonify(result)
 
 if __name__ == '__main__':
-    app.run(debug = True, host = '0.0.0.0', port = 5353)
+    app.run(debug = True, host = '127.0.0.1', port = 5000)
