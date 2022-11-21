@@ -1,7 +1,7 @@
 #%%
 import os
 import pandas as pd
-from sklearn.feature_extraction import DictVectorizer
+import numpy as np
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 #%%
@@ -40,57 +40,45 @@ trainX, testX, trainY, testY = train_test_split(X,y, test_size = .2, random_stat
 
 #%% The model fn
 def train(df_train, y_train):
-    # Dictionary vectorizer
-    dicts = df_train.to_dict(orient = 'records')
-    dv = DictVectorizer(sparse=False)
-    X_train = dv.fit_transform(dicts)
+
+    df_train = df_train.to_numpy()
 
     # Random Forest model
     from sklearn.ensemble import RandomForestClassifier
     model = RandomForestClassifier(n_estimators=1000, random_state= 123)
-    model.fit(X_train,y_train)
+    model.fit(df_train,y_train)
 
-    return dv, model
+    return model
 
 # Prediction function
-def predict(df, dv, model):
-    dicts = df.to_dict(orient = 'records')
-    X = dv.transform(dicts)
+def predict(df, model):
 
-    y_pred = model.predict(X)
+    df = df.to_numpy()
+    y_pred = model.predict(df)
     return y_pred
 
 
 #%%
-dv, model = train(trainX, trainY)
+model = train(trainX, trainY)
 
 # %% Prediction and accuracy
-pred_y = predict(testX, dv, model)
+pred_y = predict(testX, model)
 accuracy_score(testY, pred_y)
 
 
 # %% Saving the model
 import pickle
-output_file = f'model.bin'
-
-with open(output_file, 'wb') as f_out:
-    pickle.dump((dv, model), f_out)
+pickle.dump(model,open('rfModel.pkl', 'wb'))
 
 
 #%% Sample individual data
-patient = testX.iloc[3].to_dict()
+patient = testX.iloc[3].to_numpy()
+
+#%%
+rfMod = pickle.load(open('rfModel.pkl', 'rb'))
 
 # %%
-X_dv = dv.transform(patient)
-model.predict(X_dv)
+rfMod.predict(patient.reshape(1,-1))
 
 #%% Probability
-model.predict_proba(X_dv)[0,1]
-
-#######
-# %% Making requests
-import requests
-url = 'http://127.0.0.1:5000/predict'
-requests.post(url, json=patient)
-# %%
-response.json()
+model.predict_proba(patient)[0,1]

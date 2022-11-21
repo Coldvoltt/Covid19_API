@@ -1,13 +1,15 @@
 
 import pickle
-from flask import Flask, request, jsonify, app
+import pandas as pd
+from sklearn.feature_extraction import DictVectorizer
+from flask import Flask, request, jsonify
 
 with open('./model.bin', 'rb') as f_in:
     (dv, model) = pickle.load(f_in)
 
 
-
 app = Flask('covid19')
+
 
 @app.route('/predict', methods = ['POST'])
 
