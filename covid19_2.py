@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.metrics import confusion_matrix, accuracy_score
+from flask import jsonify, request
 
 #%%
 covid_19 = pd.read_csv("covidData.csv", encoding= 'unicode_escape')
@@ -54,6 +55,7 @@ def train(df_train, y_train):
 def predict(df, model):
 
     df = df.to_numpy()
+
     y_pred = model.predict(df)
     return y_pred
 
@@ -82,3 +84,4 @@ rfMod.predict(patient.reshape(1,-1))
 
 #%% Probability
 model.predict_proba(patient)[0,1]
+
